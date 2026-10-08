@@ -55,8 +55,9 @@ def talaba_id_olish(conn, ism):
 
 def talaba_topish(conn, ism):
     """Ismida berilgan matn qatnashgan talabalarni qaytaradi."""
-    sorov = f"SELECT * FROM talabalar WHERE ism LIKE '%{ism}%'"
-    return conn.execute(sorov).fetchall()
+    return conn.execute(
+        "SELECT * FROM talabalar WHERE ism LIKE ?", (f"%{ism}%",)
+    ).fetchall()
 
 
 def barcha_talabalar(conn):

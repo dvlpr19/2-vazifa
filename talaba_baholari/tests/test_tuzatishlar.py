@@ -51,5 +51,22 @@ class VaznliOrtachaTest(unittest.TestCase):
         self.assertAlmostEqual(hisobot.vaznli_ortacha([80, 30], ["Matematika", "Kimyo"]), 70)
 
 
+class QidiruvSqlInjectionTest(unittest.TestCase):
+    """Muammo: talaba_topish() so'rovni f-string bilan yig'adi (SQL injection)."""
+
+    def setUp(self):
+        self.conn = bosh_baza()
+        db.talaba_qoshish(self.conn, "Aliyev Bobur", "IT-21")
+        db.talaba_qoshish(self.conn, "Karimova Madina", "IT-21")
+
+    def test_injection_hamma_talabani_qaytarmaydi(self):
+        self.assertEqual(db.talaba_topish(self.conn, "' OR '1'='1"), [])
+
+    def test_apostrofli_qidiruv_xato_bermaydi(self):
+        db.talaba_qoshish(self.conn, "O'tkir Rahimov", "IT-21")
+        topildi = db.talaba_topish(self.conn, "O'tkir")
+        self.assertEqual([t["ism"] for t in topildi], ["O'tkir Rahimov"])
+
+
 if __name__ == "__main__":
     unittest.main()
