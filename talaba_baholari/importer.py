@@ -36,8 +36,8 @@ def json_dan_yuklash(conn, fayl_yoli):
 
     Format: [{"ism": "...", "fan": "...", "baho": 80, "sana": "15.09.2024"}, ...]
     """
-    with open(fayl_yoli, "rb") as f:
-        malumot = json.loads(f.read(), encoding="utf-8")
+    with open(fayl_yoli, encoding="utf-8") as f:
+        malumot = json.load(f)
 
     for yozuv in malumot:
         talaba_id = db.talaba_id_olish(conn, yozuv["ism"])

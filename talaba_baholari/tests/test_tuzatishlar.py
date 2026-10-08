@@ -2,6 +2,8 @@
 import os
 import sys
 import importlib
+import json
+import tempfile
 import unittest
 from unittest import mock
 
@@ -88,6 +90,23 @@ class MaxfiyTokenTest(unittest.TestCase):
     def test_kodda_token_yoq(self):
         with open(os.path.join(LOYIHA, "config.py"), encoding="utf-8") as f:
             self.assertNotIn("AAH3kLmP9xQ2vR8sT1uW4yZ6bC0dE5fG7hJ", f.read())
+
+
+class JsonYuklashTest(unittest.TestCase):
+    """Muammo: json.loads(..., encoding=...) Python 3.9 dan beri TypeError beradi."""
+
+    def test_json_dan_baho_yuklanadi(self):
+        conn = bosh_baza()
+        talaba_id = db.talaba_qoshish(conn, "Dilnoza Yusupova", "IT-22")
+        with tempfile.TemporaryDirectory() as papka:
+            yol = os.path.join(papka, "q.json")
+            with open(yol, "w", encoding="utf-8") as f:
+                json.dump([{"ism": "Dilnoza Yusupova", "fan": "Tarix",
+                            "baho": 77, "sana": "20.09.2024"}], f)
+            importer.json_dan_yuklash(conn, yol)
+        baholar = db.talaba_baholari(conn, talaba_id)
+        self.assertEqual([(b["fan"], b["baho"], b["sana"]) for b in baholar],
+                         [("Tarix", 77, "2024-09-20")])
 
 
 if __name__ == "__main__":
