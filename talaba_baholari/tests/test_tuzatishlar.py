@@ -3,6 +3,7 @@ import os
 import sys
 import importlib
 import json
+import subprocess
 import tempfile
 import unittest
 from unittest import mock
@@ -107,6 +108,29 @@ class JsonYuklashTest(unittest.TestCase):
         baholar = db.talaba_baholari(conn, talaba_id)
         self.assertEqual([(b["fan"], b["baho"], b["sana"]) for b in baholar],
                          [("Tarix", 77, "2024-09-20")])
+
+
+class CsvKodlashTest(unittest.TestCase):
+    """Muammo: CSV fayllar encoding ko'rsatilmasdan ochiladi — tizim kodlashiga bog'liq."""
+
+    def test_utf8_bolmagan_tizimda_ham_oqiladi(self):
+        with tempfile.TemporaryDirectory() as papka:
+            with open(os.path.join(papka, "talabalar.csv"), "w", encoding="utf-8") as f:
+                f.write("ism,guruh\nO\u02bbtkir Rahimov,IT-21\n")
+            with open(os.path.join(papka, "baholar.csv"), "w", encoding="utf-8") as f:
+                f.write("ism,fan,baho,sana\nO\u02bbtkir Rahimov,Fizika,70,15.09.2024\n")
+            kod = (
+                "import db, importer\n"
+                "c = db.ulanish(':memory:'); db.jadvallarni_yaratish(c)\n"
+                f"importer.csv_dan_yuklash(c, {papka!r})\n"
+                "print(len(db.barcha_talabalar(c)))\n"
+            )
+            # Windows yoki C/POSIX lokalli serverni taqlid qilamiz: standart kodlash ASCII
+            muhit = {**os.environ, "LC_ALL": "C", "PYTHONUTF8": "0", "PYTHONCOERCECLOCALE": "0"}
+            natija = subprocess.run([sys.executable, "-c", kod], cwd=LOYIHA, env=muhit,
+                                    capture_output=True, text=True, encoding="utf-8")
+            self.assertEqual(natija.returncode, 0, natija.stderr)
+            self.assertEqual(natija.stdout.strip(), "1")
 
 
 if __name__ == "__main__":

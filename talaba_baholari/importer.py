@@ -14,11 +14,11 @@ def sanani_oqish(matn):
 
 def csv_dan_yuklash(conn, papka):
     """papka/talabalar.csv va papka/baholar.csv fayllarini bazaga yuklaydi."""
-    with open(f"{papka}/talabalar.csv", newline="") as f:
+    with open(f"{papka}/talabalar.csv", newline="", encoding="utf-8") as f:
         for qator in csv.DictReader(f):
             db.talaba_qoshish(conn, qator["ism"].strip(), qator["guruh"].strip())
 
-    with open(f"{papka}/baholar.csv", newline="") as f:
+    with open(f"{papka}/baholar.csv", newline="", encoding="utf-8") as f:
         for qator in csv.DictReader(f):
             talaba_id = db.talaba_id_olish(conn, qator["ism"].strip())
             sana = sanani_oqish(qator["sana"])
