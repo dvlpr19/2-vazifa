@@ -1,7 +1,9 @@
 """Topilgan muammolar uchun testlar (har biri HISOBOT.md dagi muammoga mos)."""
 import os
 import sys
+import importlib
 import unittest
+from unittest import mock
 
 LOYIHA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, LOYIHA)
@@ -66,6 +68,26 @@ class QidiruvSqlInjectionTest(unittest.TestCase):
         db.talaba_qoshish(self.conn, "O'tkir Rahimov", "IT-21")
         topildi = db.talaba_topish(self.conn, "O'tkir")
         self.assertEqual([t["ism"] for t in topildi], ["O'tkir Rahimov"])
+
+
+class MaxfiyTokenTest(unittest.TestCase):
+    """Muammo: Telegram bot tokeni kodning ichida ochiq yozilgan."""
+
+    def tearDown(self):
+        import config
+        importlib.reload(config)
+
+    def test_token_muhit_ozgaruvchisidan_olinadi(self):
+        import config
+        with mock.patch.dict(os.environ, {"TELEGRAM_BOT_TOKEN": "env-token",
+                                          "ADMIN_CHAT_ID": "42"}):
+            importlib.reload(config)
+            self.assertEqual(config.TELEGRAM_BOT_TOKEN, "env-token")
+            self.assertEqual(config.ADMIN_CHAT_ID, "42")
+
+    def test_kodda_token_yoq(self):
+        with open(os.path.join(LOYIHA, "config.py"), encoding="utf-8") as f:
+            self.assertNotIn("AAH3kLmP9xQ2vR8sT1uW4yZ6bC0dE5fG7hJ", f.read())
 
 
 if __name__ == "__main__":

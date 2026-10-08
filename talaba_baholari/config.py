@@ -1,10 +1,13 @@
 """Loyiha sozlamalari."""
 
+import os
+
 DB_PATH = "talabalar.db"
 
-# Telegram bot orqali hisobot yuborish uchun
-TELEGRAM_BOT_TOKEN = "7412398765:AAH3kLmP9xQ2vR8sT1uW4yZ6bC0dE5fG7hJ"
-ADMIN_CHAT_ID = "123456789"
+# Telegram bot orqali hisobot yuborish uchun.
+# Maxfiy ma'lumot kodda saqlanmaydi — muhit o'zgaruvchilaridan olinadi.
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+ADMIN_CHAT_ID = os.environ.get("ADMIN_CHAT_ID")
 
 # O'tish bali: o'rtacha baho 55 va undan yuqori bo'lsa, talaba o'tgan hisoblanadi
 OTISH_BALI = 55
