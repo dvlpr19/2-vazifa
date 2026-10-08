@@ -37,5 +37,19 @@ class OtmaganlarTest(unittest.TestCase):
         self.assertEqual(hisobot.otmaganlar(natijalar), ["A"])
 
 
+class VaznliOrtachaTest(unittest.TestCase):
+    """Muammo: statistics.weighted_mean degan funksiya mavjud emas."""
+
+    def test_kreditlar_hisobga_olinadi(self):
+        # Matematika 4 kredit, Ingliz tili 2 kredit: (50*4 + 60*2) / 6
+        self.assertAlmostEqual(
+            hisobot.vaznli_ortacha([50, 60], ["Matematika", "Ingliz tili"]), 320 / 6
+        )
+
+    def test_royxatda_yoq_fan_1_kredit(self):
+        # Matematika 4, "Kimyo" ro'yxatda yo'q -> 1: (80*4 + 30*1) / 5
+        self.assertAlmostEqual(hisobot.vaznli_ortacha([80, 30], ["Matematika", "Kimyo"]), 70)
+
+
 if __name__ == "__main__":
     unittest.main()

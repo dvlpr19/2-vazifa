@@ -1,7 +1,5 @@
 """O'rtacha baholar va o'tish natijalarini hisoblash."""
 
-import statistics
-
 import db
 from config import FAN_KREDITLARI, OTISH_BALI
 
@@ -13,7 +11,7 @@ def ortacha_baho(baholar):
 def vaznli_ortacha(baholar, fanlar):
     """Fan kreditlarini hisobga olgan holda o'rtacha baho."""
     vaznlar = [FAN_KREDITLARI.get(fan, 1) for fan in fanlar]
-    return statistics.weighted_mean(baholar, vaznlar)
+    return sum(b * v for b, v in zip(baholar, vaznlar)) / sum(vaznlar)
 
 
 def otdimi(ortacha):
