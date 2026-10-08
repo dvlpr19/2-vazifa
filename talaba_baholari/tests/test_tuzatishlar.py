@@ -146,5 +146,31 @@ class SanaFormatiTest(unittest.TestCase):
             importer.sanani_oqish("31.02.2024")
 
 
+class ApostrofTest(unittest.TestCase):
+    """Muammo: bir ism turli apostroflar bilan yozilgan (G\u02bbulom va G'ulom)."""
+
+    def setUp(self):
+        self.conn = bosh_baza()
+        self.talaba_id = db.talaba_qoshish(self.conn, "G\u02bbulom Karimov", "IT-22")
+
+    def test_turli_apostroflar_bir_talaba(self):
+        for ism in ("G'ulom Karimov", "G\u02bbulom Karimov", "G\u2019ulom Karimov",
+                    "G\u02bculom Karimov", "G`ulom Karimov"):
+            self.assertEqual(db.talaba_id_olish(self.conn, ism), self.talaba_id, ism)
+
+    def test_qidiruv_apostrofga_bogliq_emas(self):
+        self.assertEqual(len(db.talaba_topish(self.conn, "G'ulom")), 1)
+        self.assertEqual(len(db.talaba_topish(self.conn, "G\u02bbulom")), 1)
+
+    def test_nomalum_talaba_tushunarli_xato(self):
+        with tempfile.TemporaryDirectory() as papka:
+            yol = os.path.join(papka, "q.json")
+            with open(yol, "w", encoding="utf-8") as f:
+                json.dump([{"ism": "Yo'q Odam", "fan": "Tarix", "baho": 70,
+                            "sana": "20.09.2024"}], f)
+            with self.assertRaisesRegex(ValueError, "Yo'q Odam"):
+                importer.json_dan_yuklash(self.conn, yol)
+
+
 if __name__ == "__main__":
     unittest.main()

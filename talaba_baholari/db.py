@@ -4,6 +4,15 @@ import sqlite3
 
 from config import DB_PATH
 
+# O'zbek tilidagi o' va g' turli manbalarda turlicha yoziladi:
+# ' (U+0027), ʻ (U+02BB), ʼ (U+02BC), ‘ (U+2018), ’ (U+2019), ` (U+0060).
+# Ismlarni solishtirish uchun hammasini bitta ' ga keltiramiz.
+APOSTROFLAR = str.maketrans({c: "'" for c in "\u02bb\u02bc\u2018\u2019`"})
+
+
+def ismni_tozalash(ism):
+    return ism.strip().translate(APOSTROFLAR)
+
 
 def ulanish(path=DB_PATH):
     conn = sqlite3.connect(path)
@@ -32,7 +41,7 @@ def jadvallarni_yaratish(conn):
 
 def talaba_qoshish(conn, ism, guruh):
     cur = conn.execute(
-        "INSERT INTO talabalar (ism, guruh) VALUES (?, ?)", (ism, guruh)
+        "INSERT INTO talabalar (ism, guruh) VALUES (?, ?)", (ismni_tozalash(ism), guruh)
     )
     conn.commit()
     return cur.lastrowid
@@ -48,7 +57,7 @@ def baho_qoshish(conn, talaba_id, fan, baho, sana):
 
 def talaba_id_olish(conn, ism):
     qator = conn.execute(
-        "SELECT id FROM talabalar WHERE ism = ?", (ism,)
+        "SELECT id FROM talabalar WHERE ism = ?", (ismni_tozalash(ism),)
     ).fetchone()
     return qator["id"] if qator else None
 
@@ -56,7 +65,7 @@ def talaba_id_olish(conn, ism):
 def talaba_topish(conn, ism):
     """Ismida berilgan matn qatnashgan talabalarni qaytaradi."""
     return conn.execute(
-        "SELECT * FROM talabalar WHERE ism LIKE ?", (f"%{ism}%",)
+        "SELECT * FROM talabalar WHERE ism LIKE ?", (f"%{ismni_tozalash(ism)}%",)
     ).fetchall()
 
 

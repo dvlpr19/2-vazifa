@@ -20,6 +20,13 @@ def sanani_oqish(matn):
     raise ValueError(f"Sana noto'g'ri yoki noma'lum formatda: {matn!r}")
 
 
+def _talaba_id(conn, ism, manba):
+    talaba_id = db.talaba_id_olish(conn, ism)
+    if talaba_id is None:
+        raise ValueError(f"{manba}: {ism!r} talabalar ro'yxatida yo'q")
+    return talaba_id
+
+
 def csv_dan_yuklash(conn, papka):
     """papka/talabalar.csv va papka/baholar.csv fayllarini bazaga yuklaydi."""
     with open(f"{papka}/talabalar.csv", newline="", encoding="utf-8") as f:
@@ -28,7 +35,7 @@ def csv_dan_yuklash(conn, papka):
 
     with open(f"{papka}/baholar.csv", newline="", encoding="utf-8") as f:
         for qator in csv.DictReader(f):
-            talaba_id = db.talaba_id_olish(conn, qator["ism"].strip())
+            talaba_id = _talaba_id(conn, qator["ism"], "baholar.csv")
             sana = sanani_oqish(qator["sana"])
             db.baho_qoshish(
                 conn,
@@ -48,6 +55,6 @@ def json_dan_yuklash(conn, fayl_yoli):
         malumot = json.load(f)
 
     for yozuv in malumot:
-        talaba_id = db.talaba_id_olish(conn, yozuv["ism"])
+        talaba_id = _talaba_id(conn, yozuv["ism"], fayl_yoli)
         sana = sanani_oqish(yozuv["sana"])
         db.baho_qoshish(conn, talaba_id, yozuv["fan"], int(yozuv["baho"]), sana.isoformat())
