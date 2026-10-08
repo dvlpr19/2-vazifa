@@ -2,13 +2,13 @@ import os
 import sys
 import unittest
 from datetime import date
-import db# noqa: E402
-import hisobot  # noqa: E402
-import importer  # noqa: E402
-
 
 LOYIHA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, LOYIHA)
+
+import db  # noqa: E402
+import hisobot  # noqa: E402
+import importer  # noqa: E402
 
 
 TEST_DATA = os.path.join(LOYIHA, "test_data")
