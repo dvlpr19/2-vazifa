@@ -1,7 +1,7 @@
 # 2-vazifa: Hisobot
 
 **Ism-familiya:** Ermamatov Nurullokh
-**AI chat tarixi (link yoki fayl nomi):** `ai-chat-tarixi.md` (Claude Code sessiyasi, uchala vazifa bitta suhbatda)
+**AI chat tarixi (link yoki fayl nomi):** https://github.com/dvlpr19/3-vazifalar/blob/main/ai-chat-tarixi.md (Claude Code sessiyasi, uchala vazifa bitta suhbatda)
 
 Qator raqamlari **boshlang'ich koddagi** (birinchi commit `Boshlang'ich kod`) holatga ko'ra.
 Har bir muammo alohida commitda tuzatilgan. Testlar `talaba_baholari/tests/test_tuzatishlar.py` faylida.
