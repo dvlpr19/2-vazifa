@@ -18,7 +18,7 @@ def vaznli_ortacha(baholar, fanlar):
 
 def otdimi(ortacha):
     """O'rtacha baho OTISH_BALI va undan yuqori bo'lsa True qaytaradi."""
-    return ortacha > OTISH_BALI
+    return ortacha >= OTISH_BALI
 
 
 def otmaganlar(natijalar, royxat=[]):
