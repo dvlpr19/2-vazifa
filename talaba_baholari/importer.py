@@ -7,9 +7,17 @@ from datetime import datetime
 import db
 
 
+SANA_FORMATLARI = ("%d.%m.%Y", "%Y-%m-%d")
+
+
 def sanani_oqish(matn):
-    """Sanani 'kun.oy.yil' formatidan o'qiydi, masalan 15.09.2024."""
-    return datetime.strptime(matn.strip(), "%d.%m.%Y").date()
+    """Sanani o'qiydi: 'kun.oy.yil' (15.09.2024) yoki ISO 'yil-oy-kun' (2024-09-15)."""
+    for fmt in SANA_FORMATLARI:
+        try:
+            return datetime.strptime(matn.strip(), fmt).date()
+        except ValueError:
+            pass
+    raise ValueError(f"Sana noto'g'ri yoki noma'lum formatda: {matn!r}")
 
 
 def csv_dan_yuklash(conn, papka):

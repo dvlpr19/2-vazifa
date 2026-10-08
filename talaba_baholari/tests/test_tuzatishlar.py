@@ -6,6 +6,7 @@ import json
 import subprocess
 import tempfile
 import unittest
+from datetime import date
 from unittest import mock
 
 LOYIHA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -131,6 +132,18 @@ class CsvKodlashTest(unittest.TestCase):
                                     capture_output=True, text=True, encoding="utf-8")
             self.assertEqual(natija.returncode, 0, natija.stderr)
             self.assertEqual(natija.stdout.strip(), "1")
+
+
+class SanaFormatiTest(unittest.TestCase):
+    """Muammo: haqiqiy ma'lumotda sanalar ikki xil formatda (15.09.2024 va 2024-09-20)."""
+
+    def test_ikkala_format_oqiladi(self):
+        self.assertEqual(importer.sanani_oqish("15.09.2024"), date(2024, 9, 15))
+        self.assertEqual(importer.sanani_oqish("2024-09-20"), date(2024, 9, 20))
+
+    def test_notogri_sana_tushunarli_xato_beradi(self):
+        with self.assertRaisesRegex(ValueError, "31.02.2024"):
+            importer.sanani_oqish("31.02.2024")
 
 
 if __name__ == "__main__":
