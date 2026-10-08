@@ -35,7 +35,10 @@ def hisobot_tuzish(conn, vaznli=False):
         qatorlar = db.talaba_baholari(conn, talaba["id"])
         baholar = [q["baho"] for q in qatorlar]
 
-        if vaznli:
+        if not baholar:
+            # Bahosi yo'q talabaning o'rtachasi yo'q; u o'tgan hisoblanmaydi
+            ortacha = None
+        elif vaznli:
             ortacha = vaznli_ortacha(baholar, [q["fan"] for q in qatorlar])
         else:
             ortacha = ortacha_baho(baholar)
@@ -44,8 +47,8 @@ def hisobot_tuzish(conn, vaznli=False):
             {
                 "ism": talaba["ism"],
                 "guruh": talaba["guruh"],
-                "ortacha": round(ortacha, 1),
-                "otdi": otdimi(ortacha),
+                "ortacha": round(ortacha, 1) if ortacha is not None else None,
+                "otdi": ortacha is not None and otdimi(ortacha),
             }
         )
     return natijalar

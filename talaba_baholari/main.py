@@ -35,8 +35,11 @@ def main():
 
     natijalar = hisobot.hisobot_tuzish(conn, vaznli=args.vaznli)
     for n in natijalar:
-        holat = "O'TDI" if n["otdi"] else "YIQILDI"
-        print(f"{n['ism']:<25} {n['guruh']:<8} {n['ortacha']:>6}  {holat}")
+        if n["ortacha"] is None:
+            ortacha, holat = "—", "BAHO YO'Q"
+        else:
+            ortacha, holat = n["ortacha"], "O'TDI" if n["otdi"] else "YIQILDI"
+        print(f"{n['ism']:<25} {n['guruh']:<8} {ortacha:>6}  {holat}")
 
     print()
     print("O'tmaganlar:", ", ".join(hisobot.otmaganlar(natijalar)) or "yo'q")

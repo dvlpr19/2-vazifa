@@ -172,5 +172,30 @@ class ApostrofTest(unittest.TestCase):
                 importer.json_dan_yuklash(self.conn, yol)
 
 
+class BahosizTalabaTest(unittest.TestCase):
+    """Muammo: bahosi yo'q talaba bo'lsa ZeroDivisionError."""
+
+    def setUp(self):
+        self.conn = bosh_baza()
+        db.talaba_qoshish(self.conn, "Dilnoza Yusupova", "IT-22")
+
+    def test_oddiy_va_vaznli_hisobot_yiqilmaydi(self):
+        for vaznli in (False, True):
+            [n] = hisobot.hisobot_tuzish(self.conn, vaznli=vaznli)
+            self.assertIsNone(n["ortacha"])
+            self.assertFalse(n["otdi"])
+
+    def test_main_bahosiz_talabani_chiqaradi(self):
+        with tempfile.TemporaryDirectory() as papka:
+            with open(os.path.join(papka, "talabalar.csv"), "w", encoding="utf-8") as f:
+                f.write("ism,guruh\nDilnoza Yusupova,IT-22\n")
+            with open(os.path.join(papka, "baholar.csv"), "w", encoding="utf-8") as f:
+                f.write("ism,fan,baho,sana\n")
+            natija = subprocess.run([sys.executable, "main.py", papka], cwd=LOYIHA,
+                                    capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(natija.returncode, 0, natija.stderr)
+        self.assertIn("BAHO YO'Q", natija.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()
