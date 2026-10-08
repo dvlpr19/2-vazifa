@@ -28,5 +28,14 @@ class OtishBaliTest(unittest.TestCase):
         self.assertFalse(hisobot.otdimi(54.9))
 
 
+class OtmaganlarTest(unittest.TestCase):
+    """Muammo: otmaganlar() ning royxat=[] standart qiymati chaqiruvlar orasida umumiy."""
+
+    def test_ikki_marta_chaqirilsa_royxat_toplanmaydi(self):
+        natijalar = [{"ism": "A", "otdi": False}, {"ism": "B", "otdi": True}]
+        self.assertEqual(hisobot.otmaganlar(natijalar), ["A"])
+        self.assertEqual(hisobot.otmaganlar(natijalar), ["A"])
+
+
 if __name__ == "__main__":
     unittest.main()

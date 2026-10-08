@@ -21,8 +21,10 @@ def otdimi(ortacha):
     return ortacha >= OTISH_BALI
 
 
-def otmaganlar(natijalar, royxat=[]):
+def otmaganlar(natijalar, royxat=None):
     """Natijalar ichidan o'tmagan talabalarning ismlarini qaytaradi."""
+    if royxat is None:
+        royxat = []
     for n in natijalar:
         if not n["otdi"]:
             royxat.append(n["ism"])
