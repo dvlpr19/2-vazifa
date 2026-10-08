@@ -1,7 +1,7 @@
 # 2-vazifa: Hisobot
 
-**Ism-familiya:**
-**AI chat tarixi (link yoki fayl nomi):**
+**Ism-familiya:** Ermamatov Nurullokh
+**AI chat tarixi (link yoki fayl nomi):** `ai-chat-tarixi.md` (Claude Code sessiyasi, uchala vazifa bitta suhbatda)
 
 Qator raqamlari **boshlang'ich koddagi** (birinchi commit `Boshlang'ich kod`) holatga ko'ra.
 Har bir muammo alohida commitda tuzatilgan. Testlar `talaba_baholari/tests/test_tuzatishlar.py` faylida.
@@ -191,11 +191,23 @@ Qo'lda tekshirildi: Aliyev (85+78)/2 = 81.5; Oʻtkir (62+71+66)/3 = 66.3; vaznli
 
 **AI qaysi muammolarni topa olmadi?**
 
-<!-- O'zingiz to'ldiring: kodni o'zingiz ko'rib chiqqaningizda AI e'tibor bermagan narsa topdingizmi? -->
+Barcha 11 ta muammoni AI (Claude Code) topdi. Men kodni qayta ko'rib chiqib, bulardan tashqari yangi muammo topmadim.
+Lekin AI bilan ishlashda quyidagilar kuzatildi:
+
+- **Bir martalik "kodni tekshir" yetarli emas.** Haqiqiy ma'lumotdagi xatolar bir-birining orqasiga yashiringan edi:
+  avval sana formati yiqitardi, u tuzatilgach — apostroflar, keyin — bahosiz talaba (nolga bo'lish).
+  Ular faqat har bir tuzatishdan keyin dasturni qayta ishga tushirib ketma-ket topildi.
+- **Ba'zi muammolar faqat boshqa muhitda ko'rinadi.** CSV kodlash muammosi (Muammo 10) Linux'da umuman sezilmaydi;
+  uni isbotlash uchun testda `LC_ALL=C` muhiti taqlid qilindi.
+- **Kodni tuzatish tokenni to'liq yashirmaydi.** Token git tarixida (birinchi commit) qoladi. Haqiqiy yechim —
+  tokenni @BotFather orqali bekor qilish; buni kod bilan qilib bo'lmaydi.
+- **Apostrof uchun yagona belgi tanlash — AI qarori.** Hammasi oddiy `'` ga keltirildi, shuning uchun hisobotda ismlar
+  `G'ulom` ko'rinishida chiqadi (manbada `Gʻulom`). Bu xato emas, lekin muhokama qilinadigan tanlov.
 
 **AI qaysi "muammo"larni noto'g'ri topdi (aslida muammo emas edi)?**
 
-Quyidagilar ko'rib chiqildi, lekin muammo deb **hisoblanmadi**:
+AI hisobotga soxta muammo kiritmadi: har bir topilma tuzatishdan **oldin yiqiladigan** test bilan tasdiqlangan
+(xato matni har bir muammoning "Qaysi test" qatorida). Quyidagilar ko'rib chiqildi, lekin muammo deb **hisoblanmadi**:
 
 - **Ko'rsatilgan o'rtacha yaxlitlangan, `otdi` esa yaxlitlanmagan qiymatdan hisoblanadi** (`hisobot.py:47-48`). Masalan, 54.96 `55.0 YIQILDI` deb chiqadi. Qoida "o'rtacha 55 va undan yuqori" — 54.96 haqiqatan 55 dan kichik, demak natija to'g'ri, faqat ko'rinishi chalkash.
 - **Qidiruvda `%` va `_` belgilari** LIKE shabloni sifatida ishlaydi (`--qidir "%"` hammani topadi). Parametrli so'rovdan keyin bu xavfsizlik muammosi emas — faqat qidiruvning xususiyati.
